@@ -2,7 +2,7 @@
 
 TensorFlow implementation of [Towards Generating Stylized Image Captions via Adversarial Training]().
 <p align="center">
-<img src="./images/samples.jpg" width=500 high=700>
+<img src="./images/samples.jpg" width=1000 high=700>
 </p>
 
 ### Reference
