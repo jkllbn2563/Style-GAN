@@ -31,4 +31,4 @@ Then, we train the models using [SentiCap Dataset](http://cm.cecs.anu.edu.au/pos
 2. [Test code](./test.py)
 3. [ATTEND-GAN model](./core/model_WGAN.py)
 
-ATTEND-GAN is inspired from [Show-Attend-Tell model](https://github.com/yunjey/show-attend-and-tell) and [SeqGAN](https://github.com/LantaoYu/SeqGAN) in TensorFlow.
+ATTEND-GAN is inspired from [SeqGAN](https://github.com/LantaoYu/SeqGAN) in TensorFlow.
