@@ -37,39 +37,17 @@ class Dis_dataloader():
         self.labels = np.array([])
 
     def load_train_data(self, positive_file, negative_file):
-        # Load data
-        # positive_examples = []
-        # negative_examples = []
-        # with open(positive_file)as fin:
-        #     for line in fin:
-        #         line = line.strip()
-        #         line = line.split()
-        #         parse_line = [int(x) for x in line]
-        #         positive_examples.append(parse_line)
-        # with open(negative_file)as fin:
-        #     for line in fin:
-        #         line = line.strip()
-        #         line = line.split()
-        #         parse_line = [int(x) for x in line]
-        #         if len(parse_line) == 20:
-        #             negative_examples.append(parse_line)
+
         self.sentences = np.concatenate((positive_file, negative_file), axis=0)#np.array(positive_file + negative_file)
 
-        # print len(self.sentences)
-
-        # Generate labels
         positive_labels = [[0, 1] for _ in positive_file]
         negative_labels = [[1, 0] for _ in negative_file]
         self.labels = np.concatenate([positive_labels, negative_labels], 0)
 
-        # print len(self.labels), "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-
-        # Shuffle the data
         shuffle_indices = np.random.permutation(np.arange(len(self.labels)))
         self.sentences = self.sentences[shuffle_indices]
         self.labels = self.labels[shuffle_indices]
 
-        # Split batches
         self.num_batch = int(len(self.labels) / self.batch_size)
         self.sentences = self.sentences[:self.num_batch * self.batch_size]
         self.labels = self.labels[:self.num_batch * self.batch_size]

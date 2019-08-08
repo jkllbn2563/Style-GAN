@@ -1,14 +1,3 @@
-# =========================================================================================
-# Implementation of "Show, Attend and Tell: Neural Caption Generator With Visual Attention".
-# There are some notations.
-# N is batch size.
-# L is spacial size of feature vector (196).
-# D is dimension of image feature vector (512).
-# T is the number of time step which is equal to caption's length-1 (16).
-# V is vocabulary size (about 10000).
-# M is dimension of word vector which is embedding size (default is 512).
-# H is dimension of hidden state (default is 1024).
-# =========================================================================================
 
 from __future__ import division
 
@@ -17,19 +6,7 @@ import tensorflow as tf
 class CaptionGenerator(object):
     def __init__(self, word_to_idx, dim_feature=[196, 512], dim_embed=512, dim_hidden=1024, dim_senti=512, n_time_step=16, beam_index=5,
                  prev2out=True, ctx2out=True, alpha_c=0.0, selector=True, dropout=True):
-        """
-        Args:
-            word_to_idx: word-to-index mapping dictionary.
-            dim_feature: (optional) Dimension of vggnet19 conv5_3 feature vectors.
-            dim_embed: (optional) Dimension of word embedding.
-            dim_hidden: (optional) Dimension of all hidden state.
-            n_time_step: (optional) Time step size of LSTM.
-            prev2out: (optional) previously generated word to hidden state. (see Eq (2) for explanation)
-            ctx2out: (optional) context to hidden state (see Eq (2) for explanation)
-            alpha_c: (optional) Doubly stochastic regularization coefficient. (see Section (4.2.1) for explanation)
-            selector: (optional) gating scalar for context vector. (see Section (4.2.1) for explanation)
-            dropout: (optional) If true then dropout layer is added.
-        """
+
         self.word_to_idx = word_to_idx
         self.idx_to_word = {i: w for w, i in word_to_idx.iteritems()}
         self.prev2out = prev2out
@@ -68,8 +45,6 @@ class CaptionGenerator(object):
         self.mode_learning = tf.placeholder(tf.int32)
         self.mode_sampling = tf.placeholder(tf.int32)
 
-    # def init_matrix(self, shape):
-    #     return tf.random_normal(shape, stddev=0.1)
 
     def recurrent_unit(self, x, context, c, h, reuse=False):#, params):
       with tf.variable_scope('lstm_internal', reuse=reuse):
@@ -124,13 +99,6 @@ class CaptionGenerator(object):
         self.Uc = tf.get_variable('Uc', [self.H, self.H], initializer=self.weight_initializer)
         self.bc = tf.get_variable('bc', [self.H], initializer=self.const_initializer)
 
-        # params.extend([
-        #     self.Wi, self.Ui, self.bi,
-        #     self.Wf, self.Uf, self.bf,
-        #     self.Wog, self.Uog, self.bog,
-        #     self.Wc, self.Uc, self.bc])
-
-        # def unit(x, context, c, h):
         previous_hidden_state = h
         c_prev = c
 
@@ -169,7 +137,6 @@ class CaptionGenerator(object):
 
         return (c, current_hidden_state)
 
-        # return unit
 
     def _get_initial_lstm(self, features):
         with tf.variable_scope('initial_lstm'):
@@ -327,7 +294,6 @@ class CaptionGenerator(object):
         loss = 0.0
         loss_2 = 0.0
         alpha_list = []
-        # lstm_cell = self.create_recurrent_unit()#tf.nn.rnn_cell.BasicLSTMCell(num_units=self.H)
         sampled_word_list = []
 
         for t in range(self.T-4):
@@ -369,16 +335,10 @@ class CaptionGenerator(object):
 
     def build_sampler(self, max_len=20):
 
-        mode=self.mode_sampling
-
         features = self.features
-        captions = self.captions
 
         face_label = tf.cast(features[:, 1, 2048:2051], tf.float32)
 
-        nsample = self.nsample
-
-        # batch normalize feature vectors
         features = self._batch_norm(features[:, :, 0:2048], mode='test', name='conv_features')
 
         c, h = self._get_initial_lstm(features=features)
@@ -429,12 +389,10 @@ class CaptionGenerator(object):
         features_category = tf.cast(self.sample_caption[:, 3:4], tf.int32)
         features_face = self._face_embedding(inputs=features_category)
         features_ext = self._ext_embedding(inputs=features_category)
-        #lo#ss_weights = self.sample_caption[:, 1]
 
         captions = self.sample_caption[:, 4:self.T]
         mask = tf.to_float(tf.not_equal(captions, self._null))
 
-        # batch normalize feature vectors
         features = self._batch_norm(features[:, :, 0:512], mode='test', name='conv_features')
 
         c, h = self._get_initial_lstm(features=features)
@@ -482,10 +440,9 @@ class CaptionGenerator(object):
         features = self.features
 
         features_category = tf.cast(features[:, 1, 515:516], tf.int32)
-        features_face = self._face_embedding(inputs=features_category )#, reuse=True)
-        features_ext = self._ext_embedding(inputs=features_category) #, reuse=True)
+        features_face = self._face_embedding(inputs=features_category )
+        features_ext = self._ext_embedding(inputs=features_category)
 
-        # batch normalize feature vectors
         features = self._batch_norm(features[:, :, 0:512], mode='test', name='conv_features')
 
         c, h = self._get_initial_lstm(features=features)
@@ -527,8 +484,8 @@ class CaptionGenerator(object):
 
             sampled_word_list.append(sampled_word)
 
-        alphas = tf.transpose(tf.stack(alpha_list), (1, 0, 2))  # (N, T, L)
-        betas = tf.transpose(tf.squeeze(beta_list), (1, 0))  # (N, T)
-        loss_out = tf.transpose(tf.stack(loss), (1, 0, 2))  # (N, T, max_len)
-        sampled_captions = tf.transpose(tf.stack(sampled_word_list), (1, 0))  # (N, max_len)
+        alphas = tf.transpose(tf.stack(alpha_list), (1, 0, 2))
+        betas = tf.transpose(tf.squeeze(beta_list), (1, 0))
+        loss_out = tf.transpose(tf.stack(loss), (1, 0, 2))
+        sampled_captions = tf.transpose(tf.stack(sampled_word_list), (1, 0))
         return alphas, betas, sampled_captions,loss_out

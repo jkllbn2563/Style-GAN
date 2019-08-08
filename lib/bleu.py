@@ -1,7 +1,7 @@
 import cPickle as pickle
 import os
 import sys
-sys.path.append('./coco-caption')
+sys.path.append('../coco-caption')
 from pycocoevalcap.bleu.bleu import Bleu
 from pycocoevalcap.rouge.rouge import Rouge
 from pycocoevalcap.cider.cider import Cider
@@ -45,13 +45,8 @@ def evaluate_for_particular_captions(cand, data_path='./data', split='val', get_
     reference_path = os.path.join(data_path, "%s/%s.references.pkl" % (split, split))
 
 
-    # load caption data
     with open(reference_path, 'rb') as f:
         ref = pickle.load(f)
-    # with open(candidate_path, 'rb') as f:
-    #     cand = pickle.load(f)
-
-    # make dictionary
     hypo = {}
     refe = {}
     for i, caption in enumerate(cand):
