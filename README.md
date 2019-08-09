@@ -26,7 +26,7 @@ Then, we train the models using [SentiCap Dataset](http://cm.cecs.anu.edu.au/pos
 4. Python-skimage
 3. Tensorflow 1.8.0
 
-### Contents
+### Content
 1. [Model Train Code](./model_train.py)
 2. [Model Test Code](./model_test.py)
 3. [ATTEND-GAN Generator](lib/generator_WGAN.py)
