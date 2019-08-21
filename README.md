@@ -1,6 +1,6 @@
 # ATTEND-GAN Model
 
-TensorFlow implementation of [Towards Generating Stylized Image Captions via Adversarial Training]().
+TensorFlow implementation of [Towards Generating Stylized Image Captions via Adversarial Training](https://arxiv.org/abs/1908.02943).
 <p align="center">
 <img src="./examples/samples.jpg" width=1000 high=700>
 </p>
@@ -8,10 +8,10 @@ TensorFlow implementation of [Towards Generating Stylized Image Captions via Adv
 ### Reference
 if you use our codes or models, please cite our paper:
 ```
-@article{,
+@article{nezami2019towards,
   title={Towards Generating Stylized Image Captions via Adversarial Training},
-  author={Mohamad Nezami, Omid and Dras, Mark and Wan, Stephen and Paris, Cecile and Hamey, Len},
-  journal={arXiv preprint},
+  author={Nezami, Omid Mohamad and Dras, Mark and Wan, Stephen and Paris, Cecile and Hamey, Len},
+  journal={arXiv preprint arXiv:1908.02943},
   year={2019}
 }
 ```
